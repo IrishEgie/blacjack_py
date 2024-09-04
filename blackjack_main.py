@@ -16,69 +16,87 @@ def draw_cards(bot):
         while 16>sum(hand)<21:
             dealt = rd.choice(cards)
             hand.append(dealt)
-
-    # to work on ... the user must fetch the damn deck & return a respond if he wants to hit or stand
-    if dealer != bot:
-        rep = True
-        while rep:
-            if sum(hand)<21:
-                add = input("Do you want another card? (Hit) Yes[y] or (Stand) No?[n]: ")
-                if add == "y":
-                    hit = rd.choice(cards)
-                    hand.append(hit)
-                    print("-"*80)
-                    print(f"Here is another card: {hit} \nYour current hand is: {hand}")
-                    rep = True
-                elif add == "n":
-                    print(f"Your current hand is: {hand}")
-                    rep = False
-            else:
-                print("Hmmm none of the above choices ... continuing for now...")
-            
+        
     if sum(hand)>21 and 11 in hand:
         hand[hand.index(11)] = 1
     
     return hand
-   
-def check_both_hands(com_hand, pos_hand):
-    if pos_hand<com_hand<21:
-        print("Dealer Wins")
-    elif com_hand<pos_hand<21:
-        print("Player Wins")
-    elif com_hand == pos_hand:
-        print("Both players & dealer won. It is a draw!")
-    elif com_hand == 21:
-        print("BlackJack! Dealer Wins")
-    elif pos_hand == 21:
-        print("BlackJack! Player Wins")
-    elif com_hand> 21:
-        print("Dealer Bust: Player wins")
-    elif pos_hand> 21:
-        print("Player Bust: Dealer wins")
+def player_cards (hand):
+    hand
 
+    while sum(hand)<21:
+        print("-"*80)
+        add = input("Do you want another card? (Hit) Yes[y] or (Stand) No?[n]: ").lower()
+        if add == "y":
+            hit = rd.choice(cards)
+            hand.append(hit)
+            print("-"*80)
+            print(f"Here is another card: {hit} \nYour current hand is: {sum(hand)}, your cards are: {hand}")                
+        elif add == "n":
+            print(f"Your current hand is: {sum(hand)}, your cards are: {hand}")
+            return hand        
+    if sum(hand)==21:
+        print(f"Your current hand is: {sum(hand)}, your cards are: {hand}")
+    elif sum(hand)>21:
+        print(f"Your current hand is: {sum(hand)}, BUST!")
+    else:
+        print("Hmmm none of the above choices ... continuing for now...")
+    return hand 
+        
+def check_both_hands(com_hand, pos_hand):
+    if pos_hand<com_hand:
+        if com_hand<21:
+            print("Dealer Wins")
+        elif com_hand == 21:
+            print("BlackJack! DEALER Wins")
+        else:
+            print("Dealer Bust: PLAYER wins")
+    elif com_hand<pos_hand:
+        if pos_hand<21:
+            print("Player Wins")
+        elif pos_hand == 21:
+            print("BlackJack! PLAYER Wins")
+        else:
+            print("Player Bust: DEALER wins")
+    elif com_hand and pos_hand > 21:
+        print("Both players & dealer BUST. It is a DRAW!")
+    elif com_hand == pos_hand:
+        print("Both players & dealer WON. It is a DRAW!")
+
+
+    
+    print("-"*80)
 restart = True
 while restart:
     print(art.logo)
     print("="*80)
 
-
+    #dealer block
     dealer = draw_cards(bot=True)
     mul = len(dealer)-1
-    print(f"Dealers Cards: {dealer[0]}","[_]"*mul)
+    print(f"Dealers Cards: {dealer[0]}","[_] "*mul)
     dealer_hands = sum(dealer)
 
+    #player block
     player = draw_cards(bot=False)
     print(f"Player Cards: {player}")
-    players_hands = sum(player)
-    print(f"Player's Hand: {players_hands}")
-       
-    check_both_hands(dealer_hands,players_hands)
-    print(f"Player's Hand: {dealer}")
+    player_cards(player)
+    print(f"Player's Hand: {sum(player)}")
 
+    #result
+    print("-"*80)
+    print(f"Dealers Cards: {dealer}")
+    print(f"Dealers's Hand: {dealer_hands}")
+    #check both the player's & the dealer's Cards
+    print("="*80)
+    check_both_hands(dealer_hands,sum(player))
 
+    print("="*80)
     q = input("Want to play again? Type any letter to play another round, press [n] to Exit:\n")
+    
     if q == "n":
         restart = False
+        print("Thank you for Playing PyBlackJack! ...")
     else: 
         print("\n"*20)
         print(art.logo)
